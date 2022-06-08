@@ -1,5 +1,4 @@
 <template>
-  
     <app-layout >
       <jet-form-section @submitted="submit" class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
         <template #title> Create Category </template>
@@ -48,15 +47,17 @@ export default {
   },
   props: {
     errors: Object,
+    category: Object,
   },
-  setup() {
+  setup(props) {
     const form = useForm({
-      title: null,
-      slug: null,
+      id: props.category.id,
+      title: props.category.title,
+      slug: props.category.slug,
     });
 
     function submit() {
-      Inertia.post(route("category.store"), form);
+      Inertia.put(route("category.update",form.id), form);
     }
 
     return { form, submit };

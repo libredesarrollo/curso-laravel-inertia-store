@@ -34,7 +34,12 @@ Route::middleware([
     })->name('dashboard');
 });
 
-// Route::inertia('/indexconinertia','Dashboard/Post/Index');
-
- Route::get('/',[App\Http\Controllers\Dashboard\PostController::class, 'index']);
- Route::resource('/category',App\Http\Controllers\Dashboard\CategoryController::class);
+//  Route::inertia('/indexconinertia','Dashboard/Post/Index');
+//  Route::get('/',[App\Http\Controllers\Dashboard\PostController::class, 'index']);
+Route::group(['middleware' => [
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified',
+]], function () {
+    Route::resource('/category', App\Http\Controllers\Dashboard\CategoryController::class);
+});

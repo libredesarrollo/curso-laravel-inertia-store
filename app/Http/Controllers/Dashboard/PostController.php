@@ -12,4 +12,5 @@ class PostController extends Controller
     {
         return Inertia::render('Dashboard/Post/Index');
     }
+
 }
