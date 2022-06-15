@@ -38,4 +38,9 @@ class CategoryController extends Controller
         $category->update($request->validated());
     }
 
+    public function destroy(Category $category)
+    {
+        $category->delete();
+    }
+
 }
