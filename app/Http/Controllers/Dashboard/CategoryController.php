@@ -25,22 +25,25 @@ class CategoryController extends Controller
     public function store(Store $request)
     {
         Category::create($request->validated());
+        return to_route('category.index')->with('message',"Created category successfully");
     }
 
     public function edit(Category $category)
     {
-        sleep(3);
+        // sleep(3);
         return inertia("Dashboard/Category/Edit", compact('category'));
     }
 
     public function update(Put $request, Category $category)
     {
         $category->update($request->validated());
+        return redirect()->route('category.index')->with('message',"Updated category successfully");
     }
 
     public function destroy(Category $category)
     {
         $category->delete();
+        return to_route('category.index')->with('message',"Deleted category successfully");
     }
 
 }
