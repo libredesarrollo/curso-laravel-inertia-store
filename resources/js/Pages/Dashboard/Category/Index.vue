@@ -21,7 +21,7 @@
                 <td class="p-2">{{ c.slug }}</td>
                 <td class="p-2">
                   <Link class="text-sm text-purple-400 hover:text-purple-700" :href="route('category.edit', c.id)">Edit</Link>
-                  <Link method="DELETE" class="text-sm text-red-400 hover:text-red-700 ml-2" :href="route('category.destroy', c.id)">Delete</Link>
+                  <Link as="button" type="button" method="DELETE" class="text-sm text-red-400 hover:text-red-700 ml-2" :href="route('category.destroy', c.id)">Delete</Link>
                 </td>
               </tr>
             </tbody>
