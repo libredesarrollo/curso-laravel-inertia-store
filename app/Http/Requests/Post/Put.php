@@ -37,7 +37,6 @@ class Put extends FormRequest
             "date" => "required",
             "description" => "required",
             "text" => "required",
-
             "posted" => "required",
             "type" => "required",
             "category_id" => "required",

@@ -77,48 +77,70 @@
           </select>
           <jet-input-error :message="errors.category_id" />
         </div>
+        <div class="col-span-6">
+          <jet-label value="Image" />
+          <jet-input
+            class="w-full"
+            type="file"
+            @input="form.image = $event.target.files[0]"
+          />
+
+          <jet-input-error :message="errors.image" />
+        </div>
+        <div class="col-span-6">
+          <jet-label value="Image" />
+
+          <o-upload v-model="form.image">
+            <o-button tag="a" variant="primary">
+              <o-icon icon="upload"></o-icon>
+              <span>Click to upload</span>
+            </o-button>
+          </o-upload>
+
+          <jet-input-error :message="errors.image" />
+        </div>
+
+        <div class="col-span-6" v-if="post.id">
+          <o-upload v-model="dropFiles" multiple drag-drop>
+            <section class="ex-center">
+              <p>
+                <o-icon icon="upload" size="is-large"> </o-icon>
+              </p>
+              <p>Drop your files here or click to upload</p>
+            </section>
+          </o-upload>
+        </div>
       </template>
       <template #actions>
         <jet-button type="submit">Send</jet-button>
       </template>
     </jet-form-section>
 
-    <div class="container">
-      <div class="card">
-        <div class="card-body">
-          <div class="grid grid-cols-2 gap-2">
-            <div>
-              <jet-label value="Image" />
-              <jet-input
-                class="w-full"
-                type="file"
-                @input="form.image = $event.target.files[0]"
-              />
-              <jet-input-error :message="errors.image" />
-            </div>
-            <div>
-              <jet-button class="mt-3" @click="upload">Send</jet-button>
-            </div>
-          </div>
-        </div>
+    <div class="container mb-4" v-if="post.image">
+    <div class="card">
+      <div class="card-body">
+          <img class="max-w-xs rounded-md shadow-sm" :src="'/image/post/' + post.image" alt="">
+          <jet-danger-button class="mt-4" @click="form.delete(route('post.image-delete',form.id))">Delete</jet-danger-button>
+          <a :href="'/image/post/' + post.image" download="" class="ml-2 mt-4 link-button-default">Download</a>
       </div>
     </div>
+      
+    </div>
+
   </app-layout>
 </template>
  
 <script>
 import { Inertia } from "@inertiajs/inertia";
 import { useForm } from "@inertiajs/inertia-vue3";
-
 // import AppLayout from "../../../Layouts/AppLayout"
 import AppLayout from "@/Layouts/AppLayout";
-
 import JetInput from "@/Jetstream/Input";
 import JetInputError from "@/Jetstream/InputError";
 import JetLabel from "@/Jetstream/Label";
 import JetButton from "@/Jetstream/Button";
+import JetDangerButton from "@/Jetstream/DangerButton";
 import JetFormSection from "@/Jetstream/FormSection";
-
 export default {
   components: {
     AppLayout,
@@ -126,12 +148,27 @@ export default {
     JetInputError,
     JetLabel,
     JetButton,
+    JetDangerButton,
     JetFormSection,
   },
   props: {
     errors: Object,
-    post: Object,
+    post: {
+      type: Object,
+      default: {
+        id: "",
+        title: "",
+        slug: "",
+        date: "",
+        description: "",
+        text: "",
+        type: "",
+        posted: "",
+        category_id: "",
+      },
+    },
     categories: Object,
+    dropFiles: []
   },
   setup(props) {
     const form = useForm({
@@ -146,16 +183,32 @@ export default {
       category_id: props.post.category_id,
       image: "",
     });
-
     function submit() {
-      Inertia.put(route("post.update", form.id), form);
+      if (form.id == "") Inertia.post(route("post.store"), form);
+      //else Inertia.put(route("post.update", form.id), form);
+      else
+        Inertia.post(route("post.update", form.id), {
+          _method: "put",
+          title: form.title,
+          date: form.date,
+          description: form.description,
+          text: form.text,
+          type: form.type,
+          posted: form.posted,
+          category_id: form.category_id,
+          image: form.image,
+        });
     }
-
-    function upload() {
-      Inertia.post(route("post.upload", form.id), form);
-    }
-
-    return { form, submit, upload };
+    return { form, submit };
   },
+  watch: {
+    dropFiles:{
+      handler(val){
+        Inertia.post(route("post.upload", this.$page.props.post.id), {
+          "image":val[val.length -1]
+        });
+      }
+    }
+  }
 };
 </script>
