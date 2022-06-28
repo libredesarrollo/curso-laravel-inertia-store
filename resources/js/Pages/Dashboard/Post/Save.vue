@@ -25,10 +25,18 @@
         </div>
         <div class="col-span-6">
           <jet-label value="Text" />
-          <textarea
+          <!-- <textarea
             class="rounded-md w-full border-gray-300"
             v-model="form.text"
-          ></textarea>
+          ></textarea> -->
+
+        <ckeditor
+        :editor="editor.editor"
+        v-model="form.text"
+        >
+
+        </ckeditor>
+
           <jet-input-error :message="errors.text" />
         </div>
         <div class="col-span-6">
@@ -133,6 +141,9 @@
 <script>
 import { Inertia } from "@inertiajs/inertia";
 import { useForm } from "@inertiajs/inertia-vue3";
+
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic"
+
 // import AppLayout from "../../../Layouts/AppLayout"
 import AppLayout from "@/Layouts/AppLayout";
 import JetInput from "@/Jetstream/Input";
@@ -150,6 +161,14 @@ export default {
     JetButton,
     JetDangerButton,
     JetFormSection,
+    ClassicEditor
+  },
+  data() {
+    return {
+      editor: {
+        editor: ClassicEditor
+      }
+    }
   },
   props: {
     errors: Object,

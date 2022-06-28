@@ -13,6 +13,8 @@ import '@oruga-ui/oruga-next/dist/oruga-full.css'
 // ORUGA
 // Material Design Icon
 import '@mdi/font/css/materialdesignicons.min.css'
+//CKEDITOR
+import CKEditor from '@ckeditor/ckeditor5-vue';
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
@@ -21,6 +23,7 @@ createInertiaApp({
         return createApp({ render: () => h(app, props) })
             .use(plugin)
             .use(Oruga)
+            .use(CKEditor)
             .mixin({ methods: { route } })
             .mount(el);
     },
