@@ -2,6 +2,11 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+/* ORUGA */
+:root{
+    --oruga-modal-content-padding: 0
+}
+/* ORUGA */
 
 .card {
     @apply bg-white shadow rounded-md
