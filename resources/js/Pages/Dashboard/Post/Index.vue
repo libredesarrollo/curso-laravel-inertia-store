@@ -8,11 +8,12 @@
     </div>
   </o-modal> 
   
-  <modal :show="false">
-    Hola Inertia
+  <modal :show="true">
+    Hello Inertia
   </modal>
   
   -->
+
   <confirmation-modal :show="confirmDeleteActive">
     <template v-slot:title> Confirmation </template>
 
@@ -47,17 +48,17 @@
               </tr>
             </thead>
             <tbody>
-              <tr class="border-b" v-for="c in categories.data" :key="c.id">
-                <td class="p-2">{{ c.id }}</td>
-                <td class="p-2">{{ c.title }}</td>
-                <td class="p-2">{{ c.slug }}</td>
+              <tr class="border-b" v-for="p in posts.data" :key="p.id">
+                <td class="p-2">{{ p.id }}</td>
+                <td class="p-2">{{ p.title }}</td>
+                <td class="p-2">{{ p.slug }}</td>
                 <td class="p-2">
                   <Link
                     class="text-sm text-purple-400 hover:text-purple-700 mr-4"
-                    :href="route('post.edit', c.id)"
+                    :href="route('post.edit', p.id)"
                     >Edit</Link
                   >
-                  <!-- <Link as="button" type="button" method="DELETE" class="text-sm text-red-400 hover:text-red-700 ml-2" :href="route('post.destroy', c.id)">Delete</Link> -->
+                  <!-- <Link as="button" type="button" method="DELETE" class="text-sm text-red-400 hover:text-red-700 ml-2" :href="route('post.destroy', p.id)">Delete</Link> -->
 
                   <o-button
                     iconLeft="delete"
@@ -66,7 +67,7 @@
                     variant="danger"
                     @click="
                       confirmDeleteActive = true;
-                      deletePostRow = c.id;
+                      deletePostRow = p.id;
                     "
                   >
                     Delete
@@ -80,7 +81,7 @@
             <span v-else class="px-2 py-1 cursor-pointer text-gray-500"  v-html="l.label"  />
         </template> -->
 
-          <pagination class="my-4" :links="categories" />
+          <pagination class="my-4" :links="posts" />
         </div>
       </div>
     </div>
@@ -111,7 +112,7 @@ export default {
     ConfirmationModal,
   },
   props: {
-    categories: Object,
+    posts: Object,
   },
   methods: {
     deletePost() {

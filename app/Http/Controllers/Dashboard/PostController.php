@@ -15,8 +15,8 @@ class PostController extends Controller
 
     public function index()
     {
-        $categories = Post::paginate(2);
-        return inertia("Dashboard/Post/Index", compact("categories"));
+        $posts = Post::paginate(2);
+        return inertia("Dashboard/Post/Index", compact("posts"));
     }
 
     public function create()

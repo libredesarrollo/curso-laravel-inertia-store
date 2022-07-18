@@ -46,3 +46,12 @@ Route::group(['middleware' => [
     Route::post('/post/upload/{post}', [App\Http\Controllers\Dashboard\PostController::class,'upload'])->name('post.upload');
     Route::delete('/post/image/delete/{post}', [App\Http\Controllers\Dashboard\PostController::class,'imageDelete'])->name('post.image-delete');
 });
+
+Route::group([
+    'prefix' => 'contact',
+    ], function () {
+    Route::resource('contact-general', App\Http\Controllers\Contact\GeneralController::class)->only(['create','edit','store','update']);
+    Route::resource('contact-company', App\Http\Controllers\Contact\CompanyController::class)->only(['create','edit','store','update']);
+    Route::resource('contact-person', App\Http\Controllers\Contact\PersonController::class)->only(['create','edit','store','update']);
+    Route::resource('contact-detail', App\Http\Controllers\Contact\DetailController::class)->only(['create','edit','store','update']);
+});

@@ -21,12 +21,17 @@ createInertiaApp({
     title: (title) => `${title} - ${appName}`,
     resolve: (name) => require(`./Pages/${name}.vue`),
     setup({ el, app, props, plugin }) {
-        return createApp({ render: () => h(app, props) })
+         const myApp = createApp({ render: () => h(app, props) })
             .use(plugin)
             .use(Oruga)
             .use(CKEditor)
-            .mixin({ methods: { route } })
-            .mount(el);
+            .mixin({ methods: { route } });
+
+            //myApp.config.globalProperties.$step=1
+
+            myApp.mount(el);
+
+            return myApp;
     },
 });
 
