@@ -13,7 +13,7 @@ class CategoryController extends Controller
     
     public function index()
     {
-        $categories = Category::paginate(2);
+        $categories = Category::paginate(10);
         return inertia("Dashboard/Category/Index",compact("categories"));
     }
 

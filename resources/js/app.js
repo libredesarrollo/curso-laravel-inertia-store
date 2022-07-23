@@ -4,6 +4,8 @@ import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/inertia-vue3';
 import { InertiaProgress } from '@inertiajs/progress';
 
+import { vue3Debounce } from 'vue-debounce'
+
 const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel';
 
 // ORUGA
@@ -29,7 +31,9 @@ createInertiaApp({
 
             //myApp.config.globalProperties.$step=1
 
-            myApp.mount(el);
+            myApp
+            .directive('debounce', vue3Debounce({ lock: true }))
+            .mount(el);
 
             return myApp;
     },

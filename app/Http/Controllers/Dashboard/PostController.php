@@ -15,8 +15,40 @@ class PostController extends Controller
 
     public function index()
     {
-        $posts = Post::paginate(2);
-        return inertia("Dashboard/Post/Index", compact("posts"));
+        $posts = Post::where("id", ">=", 1);
+        $categories = Category::get();
+        $search = request('search');
+        $from = request('from');
+        $to = request('to');
+        $type = request('type');
+        $category_id = request('category_id');
+        $posted = request('posted');
+
+        if (request('search')) {
+            $posts->where(function ($query) {
+                $query->orWhere("id", "like", "%" . request("search") . "%")
+                    ->orWhere("title", "like", "%" . request("search") . "%")
+                    ->orWhere("description", "like", "%" . request("search") . "%");
+            });
+        }
+
+        if (request('from') && request('to')) {
+            $posts->whereBetween('date', [date(request("from")), date(request("to"))]);
+        }
+
+        if (request('type')) {
+            $posts->where('type', request("type"));
+        }
+        if (request('category_id')) {
+            $posts->where('category_id', request("category_id"));
+        }
+        if (request('posted')) {
+            $posts->where('posted', request("posted"));
+        }
+
+        $posts = $posts->paginate(10);
+
+        return inertia("Dashboard/Post/Index", ["posts" => $posts, "categories" => $categories, "posted" => $posted,"category_id" => $category_id,"type" => $type,"from" => $from,"to" => $to,"search" => $search,]);
     }
 
     public function create()

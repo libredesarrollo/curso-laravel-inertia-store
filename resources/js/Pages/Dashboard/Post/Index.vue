@@ -22,11 +22,9 @@
     </template>
 
     <template v-slot:footer>
-      
-        <o-button variant="danger" @click="deletePost">Delete</o-button>
-        <div class="mr-3"></div>
-        <o-button @click="confirmDeleteActive = false">Cancel</o-button>
-      
+      <o-button variant="danger" @click="deletePost">Delete</o-button>
+      <div class="mr-3"></div>
+      <o-button @click="confirmDeleteActive = false">Cancel</o-button>
     </template>
   </confirmation-modal>
 
@@ -38,20 +36,55 @@
             >Create</Link
           >
 
+          <div class="grid grid-cols-2 gap-2 mb-2">
+
+            <jet-input class="w-full" type="date" v-model="from" placeholder="Date From"></jet-input>
+            <jet-input class="w-full" type="date" v-model="to" placeholder="Date to"></jet-input>
+            <jet-input class="w-full" type="text" v-debounce.500ms="customSearch" :debounce-events="['keyup']" v-model="search" placeholder="Search by id, title or description"></jet-input>
+
+            <select @change="customSearch"  class="rounded-md w-full border-gray-300" v-model="posted">
+              <option value="not">No</option>
+              <option value="yes">Yes</option>
+            </select>
+
+            <select @change="customSearch"  class="rounded-md w-full border-gray-300" v-model="type">
+              <option value="adverd">Adverd</option>
+              <option value="post">Post</option>
+              <option value="course">Course</option>
+              <option value="movie">Movie</option>
+            </select>
+
+            <select @change="customSearch" 
+              class="rounded-md w-full border-gray-300"
+              v-model="category_id"
+            >
+              <option value=""></option>
+              <option v-for="c in categories" :value="c.id" :key="c.id">
+                {{ c.title }}
+              </option>
+            </select>
+
+            <jet-button @click="customSearch"> Filter </jet-button>
+          </div>
+
           <table class="w-full border">
             <thead class="bg-gray-100">
               <tr class="border-b">
                 <th class="p-3">Id</th>
                 <th class="p-3">Title</th>
-                <th class="p-3">Slug</th>
+                <th class="p-3">Date</th>
+                <th class="p-3">Description</th>
                 <th class="p-3">Actions</th>
               </tr>
             </thead>
             <tbody>
               <tr class="border-b" v-for="p in posts.data" :key="p.id">
                 <td class="p-2">{{ p.id }}</td>
-                <td class="p-2">{{ p.title }}</td>
-                <td class="p-2">{{ p.slug }}</td>
+                <td class="p-2">{{ p.date }}</td>
+                <td class="p-2">{{ p.title.substring(0,15) }}</td>
+                <td class="p-2"><textarea class="w-48">
+                  {{ p.description }}
+                </textarea></td>
                 <td class="p-2">
                   <Link
                     class="text-sm text-purple-400 hover:text-purple-700 mr-4"
@@ -94,6 +127,8 @@ import { Inertia } from "@inertiajs/inertia";
 
 import AppLayout from "@/Layouts/AppLayout";
 import Modal from "@/Jetstream/Modal";
+import JetButton from "@/Jetstream/Button";
+import JetInput from "@/Jetstream/Input";
 import ConfirmationModal from "@/Jetstream/ConfirmationModal";
 import Pagination from "@/Shared/Pagination.vue";
 
@@ -109,15 +144,36 @@ export default {
     Link,
     Pagination,
     Modal,
+    JetButton,
+    JetInput,
     ConfirmationModal,
   },
   props: {
     posts: Object,
+    categories: Object,
+    type: "",
+    category_id: "",
+    posted: "",
+    search: "",
+    from: "",
+    to: "",
   },
   methods: {
     deletePost() {
       Inertia.delete(route("post.destroy", this.deletePostRow));
       this.confirmDeleteActive = false;
+    },
+    customSearch() {
+      Inertia.get(
+        route("post.index", {
+          category_id: this.category_id,
+          type: this.type,
+          posted: this.posted,
+          search: this.search,
+          from: this.from,
+          to: this.to,
+        })
+      );
     },
   },
 

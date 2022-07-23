@@ -36,7 +36,9 @@ Route::middleware([
 
 //  Route::inertia('/indexconinertia','Dashboard/Post/Index');
 //  Route::get('/',[App\Http\Controllers\Dashboard\PostController::class, 'index']);
-Route::group(['middleware' => [
+Route::group([
+    'prefix' => 'dashboard',
+    'middleware' => [
     'auth:sanctum',
     config('jetstream.auth_session'),
     'verified',
