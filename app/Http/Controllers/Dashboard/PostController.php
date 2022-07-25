@@ -13,9 +13,18 @@ use Illuminate\Support\Facades\Storage;
 class PostController extends Controller
 {
 
+    public $columns = [
+        'id' => 'Id',
+        'date' => 'Date',
+        'title' => 'Title',
+        'description' => 'Description',
+        'type' => 'Type',
+        'category_id' => 'Category',
+    ];
+
     public function index()
     {
-        $posts = Post::where("id", ">=", 1);
+
         $categories = Category::get();
         $search = request('search');
         $from = request('from');
@@ -23,6 +32,11 @@ class PostController extends Controller
         $type = request('type');
         $category_id = request('category_id');
         $posted = request('posted');
+
+        $sortColumn = request('sortColumn') ?? 'id';
+        $sortDirection = request('sortDirection') ?? 'desc';
+
+        $posts = Post::with('category')->orderBy($sortColumn, $sortDirection);
 
         if (request('search')) {
             $posts->where(function ($query) {
@@ -48,7 +62,7 @@ class PostController extends Controller
 
         $posts = $posts->paginate(10);
 
-        return inertia("Dashboard/Post/Index", ["posts" => $posts, "categories" => $categories, "posted" => $posted,"category_id" => $category_id,"type" => $type,"from" => $from,"to" => $to,"search" => $search,]);
+        return inertia("Dashboard/Post/Index", ["sortDirection" => $sortDirection, "sortColumn" => $sortColumn, "columns" => $this->columns, "posts" => $posts, "categories" => $categories, "posted" => $posted, "category_id" => $category_id, "type" => $type, "from" => $from, "to" => $to, "search" => $search,]);
     }
 
     public function create()

@@ -37,24 +37,49 @@
           >
 
           <div class="grid grid-cols-2 gap-2 mb-2">
+            <jet-input
+              class="w-full"
+              type="date"
+              v-model="from"
+              placeholder="Date From"
+            ></jet-input>
+            <jet-input
+              class="w-full"
+              type="date"
+              v-model="to"
+              placeholder="Date to"
+            ></jet-input>
+            <jet-input
+              class="w-full"
+              type="text"
+              v-debounce.500ms="customSearch"
+              :debounce-events="['keyup']"
+              v-model="search"
+              placeholder="Search by id, title or description"
+            ></jet-input>
 
-            <jet-input class="w-full" type="date" v-model="from" placeholder="Date From"></jet-input>
-            <jet-input class="w-full" type="date" v-model="to" placeholder="Date to"></jet-input>
-            <jet-input class="w-full" type="text" v-debounce.500ms="customSearch" :debounce-events="['keyup']" v-model="search" placeholder="Search by id, title or description"></jet-input>
-
-            <select @change="customSearch"  class="rounded-md w-full border-gray-300" v-model="posted">
+            <select
+              @change="customSearch"
+              class="rounded-md w-full border-gray-300"
+              v-model="posted"
+            >
               <option value="not">No</option>
               <option value="yes">Yes</option>
             </select>
 
-            <select @change="customSearch"  class="rounded-md w-full border-gray-300" v-model="type">
+            <select
+              @change="customSearch"
+              class="rounded-md w-full border-gray-300"
+              v-model="type"
+            >
               <option value="adverd">Adverd</option>
               <option value="post">Post</option>
               <option value="course">Course</option>
               <option value="movie">Movie</option>
             </select>
 
-            <select @change="customSearch" 
+            <select
+              @change="customSearch"
               class="rounded-md w-full border-gray-300"
               v-model="category_id"
             >
@@ -70,10 +95,20 @@
           <table class="w-full border">
             <thead class="bg-gray-100">
               <tr class="border-b">
-                <th class="p-3">Id</th>
-                <th class="p-3">Title</th>
-                <th class="p-3">Date</th>
-                <th class="p-3">Description</th>
+                <th v-for="(c, k) in columns" class="p-3" :key="c">
+                 <button @click="customSearch(k)">
+                   {{ c }}
+                  <template v-if="k == sortColumn">
+                    <template v-if="'asc' == sortDirection">
+                       &uarr;
+                    </template>
+                    <template v-else>
+                       &darr;
+                    </template>
+                  </template>
+                 </button>
+                </th>
+
                 <th class="p-3">Actions</th>
               </tr>
             </thead>
@@ -81,10 +116,15 @@
               <tr class="border-b" v-for="p in posts.data" :key="p.id">
                 <td class="p-2">{{ p.id }}</td>
                 <td class="p-2">{{ p.date }}</td>
-                <td class="p-2">{{ p.title.substring(0,15) }}</td>
-                <td class="p-2"><textarea class="w-48">
+                <td class="p-2">{{ p.title.substring(0, 15) }}</td>
+                <td class="p-2">
+                  <textarea class="w-48">
                   {{ p.description }}
-                </textarea></td>
+                </textarea
+                  >
+                </td>
+                <td class="p-2">{{ p.category.title }}</td>
+                <td class="p-2">{{ p.type }}</td>
                 <td class="p-2">
                   <Link
                     class="text-sm text-purple-400 hover:text-purple-700 mr-4"
@@ -157,13 +197,16 @@ export default {
     search: "",
     from: "",
     to: "",
+    sortColumn: "",
+    sortDirection: "",
+    columns: "",
   },
   methods: {
     deletePost() {
       Inertia.delete(route("post.destroy", this.deletePostRow));
       this.confirmDeleteActive = false;
     },
-    customSearch() {
+    customSearch(column='id') {
       Inertia.get(
         route("post.index", {
           category_id: this.category_id,
@@ -172,6 +215,8 @@ export default {
           search: this.search,
           from: this.from,
           to: this.to,
+          sortColumn: column,
+          sortDirection: this.sortDirection == 'asc' ? 'desc' : 'asc',
         })
       );
     },
