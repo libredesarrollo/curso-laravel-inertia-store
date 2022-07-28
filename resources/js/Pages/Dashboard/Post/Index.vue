@@ -37,21 +37,28 @@
           >
 
           <div class="grid grid-cols-2 gap-2 mb-2">
-            <jet-input
-              class="w-full"
-              type="date"
-              v-model="from"
-              placeholder="Date From"
-            ></jet-input>
-            <jet-input
-              class="w-full"
-              type="date"
-              v-model="to"
-              placeholder="Date to"
-            ></jet-input>
+            <div class="col-span-2 border grid grid-cols-2 gap-2 p-3">
+              <jet-label value="Date From" />
+              <jet-label value="Date To" />
+
+              <jet-input
+                class="w-full"
+                type="date"
+                v-model="from"
+                placeholder="Date From"
+              ></jet-input>
+              <jet-input
+                class="w-full"
+                type="date"
+                v-model="to"
+                placeholder="Date to"
+              ></jet-input>
+            </div>
+
             <jet-input
               class="w-full"
               type="text"
+              autofocus
               v-debounce.500ms="customSearch"
               :debounce-events="['keyup']"
               v-model="search"
@@ -63,6 +70,7 @@
               class="rounded-md w-full border-gray-300"
               v-model="posted"
             >
+              <option :value="null">Posted</option>
               <option value="not">No</option>
               <option value="yes">Yes</option>
             </select>
@@ -72,6 +80,7 @@
               class="rounded-md w-full border-gray-300"
               v-model="type"
             >
+              <option :value="null">Type</option>
               <option value="adverd">Adverd</option>
               <option value="post">Post</option>
               <option value="course">Course</option>
@@ -83,30 +92,33 @@
               class="rounded-md w-full border-gray-300"
               v-model="category_id"
             >
-              <option value=""></option>
+              <option :value="null">Category</option>
               <option v-for="c in categories" :value="c.id" :key="c.id">
                 {{ c.title }}
               </option>
             </select>
 
-            <jet-button @click="customSearch"> Filter </jet-button>
+            <div>
+              <jet-button @click="customSearch"> Filter </jet-button>
+            </div>
+            <div>
+              <jet-button @click="cleanSearch"> Clean </jet-button>
+            </div>
           </div>
 
           <table class="w-full border">
             <thead class="bg-gray-100">
               <tr class="border-b">
                 <th v-for="(c, k) in columns" class="p-3" :key="c">
-                 <button @click="sort(k)">
-                   {{ c }}
-                  <template v-if="k == sortColumn">
-                    <template v-if="'asc' == sortDirection">
-                       &uarr;
+                  <button @click="sort(k)">
+                    {{ c }}
+                    <template v-if="k == sortColumn">
+                      <template v-if="'asc' == sortDirection">
+                        &uarr;
+                      </template>
+                      <template v-else> &darr; </template>
                     </template>
-                    <template v-else>
-                       &darr;
-                    </template>
-                  </template>
-                 </button>
+                  </button>
                 </th>
 
                 <th class="p-3">Actions</th>
@@ -169,6 +181,7 @@ import AppLayout from "@/Layouts/AppLayout";
 import Modal from "@/Jetstream/Modal";
 import JetButton from "@/Jetstream/Button";
 import JetInput from "@/Jetstream/Input";
+import JetLabel from "@/Jetstream/Label";
 import ConfirmationModal from "@/Jetstream/ConfirmationModal";
 import Pagination from "@/Shared/Pagination.vue";
 
@@ -177,7 +190,7 @@ export default {
     return {
       confirmDeleteActive: false,
       deletePostRow: "",
-      column:"id"
+      column: "id",
     };
   },
   components: {
@@ -187,6 +200,7 @@ export default {
     Modal,
     JetButton,
     JetInput,
+    JetLabel,
     ConfirmationModal,
   },
   props: {
@@ -217,14 +231,17 @@ export default {
           from: this.from,
           to: this.to,
           sortColumn: this.column,
-          sortDirection: this.sortDirection == 'asc' ? 'desc' : 'asc',
+          sortDirection: this.sortDirection == "asc" ? "desc" : "asc",
         })
       );
     },
-    sort(column='id'){
-      this.column = column
-      this.customSearch()
-    }
+    sort(column = "id") {
+      this.column = column;
+      this.customSearch();
+    },
+    cleanSearch() {
+      Inertia.get(route("post.index"));
+    },
   },
 
   // setup(props) {
