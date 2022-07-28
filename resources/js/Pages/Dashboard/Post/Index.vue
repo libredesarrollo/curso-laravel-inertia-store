@@ -96,7 +96,7 @@
             <thead class="bg-gray-100">
               <tr class="border-b">
                 <th v-for="(c, k) in columns" class="p-3" :key="c">
-                 <button @click="customSearch(k)">
+                 <button @click="sort(k)">
                    {{ c }}
                   <template v-if="k == sortColumn">
                     <template v-if="'asc' == sortDirection">
@@ -177,6 +177,7 @@ export default {
     return {
       confirmDeleteActive: false,
       deletePostRow: "",
+      column:"id"
     };
   },
   components: {
@@ -206,7 +207,7 @@ export default {
       Inertia.delete(route("post.destroy", this.deletePostRow));
       this.confirmDeleteActive = false;
     },
-    customSearch(column='id') {
+    customSearch() {
       Inertia.get(
         route("post.index", {
           category_id: this.category_id,
@@ -215,11 +216,15 @@ export default {
           search: this.search,
           from: this.from,
           to: this.to,
-          sortColumn: column,
+          sortColumn: this.column,
           sortDirection: this.sortDirection == 'asc' ? 'desc' : 'asc',
         })
       );
     },
+    sort(column='id'){
+      this.column = column
+      this.customSearch()
+    }
   },
 
   // setup(props) {
