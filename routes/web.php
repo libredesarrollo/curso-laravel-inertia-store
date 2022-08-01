@@ -39,21 +39,29 @@ Route::middleware([
 Route::group([
     'prefix' => 'dashboard',
     'middleware' => [
-    'auth:sanctum',
-    config('jetstream.auth_session'),
-    'verified',
-]], function () {
+        'auth:sanctum',
+        config('jetstream.auth_session'),
+        'verified',
+    ]
+], function () {
     Route::resource('/category', App\Http\Controllers\Dashboard\CategoryController::class);
     Route::resource('/post', App\Http\Controllers\Dashboard\PostController::class);
-    Route::post('/post/upload/{post}', [App\Http\Controllers\Dashboard\PostController::class,'upload'])->name('post.upload');
-    Route::delete('/post/image/delete/{post}', [App\Http\Controllers\Dashboard\PostController::class,'imageDelete'])->name('post.image-delete');
+    Route::post('/post/upload/{post}', [App\Http\Controllers\Dashboard\PostController::class, 'upload'])->name('post.upload');
+    Route::delete('/post/image/delete/{post}', [App\Http\Controllers\Dashboard\PostController::class, 'imageDelete'])->name('post.image-delete');
 });
 
 Route::group([
     'prefix' => 'contact',
-    ], function () {
-    Route::resource('contact-general', App\Http\Controllers\Contact\GeneralController::class)->only(['create','edit','store','update']);
-    Route::resource('contact-company', App\Http\Controllers\Contact\CompanyController::class)->only(['create','edit','store','update']);
-    Route::resource('contact-person', App\Http\Controllers\Contact\PersonController::class)->only(['create','edit','store','update']);
-    Route::resource('contact-detail', App\Http\Controllers\Contact\DetailController::class)->only(['create','edit','store','update']);
+], function () {
+    Route::resource('contact-general', App\Http\Controllers\Contact\GeneralController::class)->only(['create', 'edit', 'store', 'update']);
+    Route::resource('contact-company', App\Http\Controllers\Contact\CompanyController::class)->only(['create', 'edit', 'store', 'update']);
+    Route::resource('contact-person', App\Http\Controllers\Contact\PersonController::class)->only(['create', 'edit', 'store', 'update']);
+    Route::resource('contact-detail', App\Http\Controllers\Contact\DetailController::class)->only(['create', 'edit', 'store', 'update']);
+});
+
+Route::group([
+    'prefix' => 'blog',
+], function () {
+    Route::get('/', [App\Http\Controllers\Blog\PostController::class, 'index'])->name('web.index');
+    Route::get('/{post:slug}', [App\Http\Controllers\Blog\PostController::class, 'show'])->name('web.show');
 });
