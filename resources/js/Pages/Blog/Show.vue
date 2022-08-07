@@ -23,7 +23,18 @@
             {{ post.date }}
           </p>
 
+          <span class="ml-4 rounded-md bg-purple-500 py-1 px-3 text-white">
+            {{ post.type }}
+          </span>
+          <span class="ml-4 rounded-md bg-purple-500 py-1 px-3 text-white">
+            {{ post.category.title }}
+          </span>
+
           <div v-html="post.text"></div>
+
+          <div v-if="post.type == 'adverd'">
+            <cart-item :post="post"/>
+          </div>
 
           <hr class="my-8" />
 
@@ -38,11 +49,13 @@
 import WebLayout from "@/Layouts/WebLayout";
 
 import GeneralStep from "@/Pages/Contact/General/Step";
+import CartItem from "@/Fragment/CartItem";
 
 export default {
   components: {
     WebLayout,
     GeneralStep,
+    CartItem,
   },
   props: {
     post: Object,
