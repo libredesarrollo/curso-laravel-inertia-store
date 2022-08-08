@@ -1,0 +1,53 @@
+<?php
+
+namespace App\Listeners;
+
+use App\Models\Post;
+use App\Models\ShoppingCart;
+use Illuminate\Auth\Events\Login as IlluminateAuthEventsLogin;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Arr;
+
+
+class LoginSuccessful
+{
+    /**
+     * Create the event listener.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        //
+    }
+
+    /**
+     * Handle the event.
+     *
+     * @param  \IlluminateAuthEventsLogin  $event
+     * @return void
+     */
+    public function handle(IlluminateAuthEventsLogin $event)
+    {
+        $cart = ShoppingCart::where('user_id', auth()->id())->get();
+        foreach($cart as $c){
+            $this->add($c->post,$c->count);
+        }
+
+    }
+
+    public function add(Post $post, $count = 1)
+    {
+        $cart = session('cart', []);
+        
+        // add
+        if (Arr::exists($cart, $post->id)) {
+            $cart[$post->id][1] = $count;
+        } else {
+            $cart[$post->id] = [$post, $count];
+        }
+        // set en la sesion
+        session(['cart' => $cart]);
+    }
+}
