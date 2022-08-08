@@ -36,6 +36,14 @@ export default {
           count: this.count,
         })
       );
+
+      this.$oruga.notification.open({
+        message: "Applied changes",
+        position: "top-right",
+        variant: "success",
+        duration: 2000,
+        closable: true,
+      });
     },
   },
 };
