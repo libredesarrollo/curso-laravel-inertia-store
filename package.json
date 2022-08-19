@@ -31,6 +31,7 @@
         "@mdi/font": "^6.7.96",
         "@oruga-ui/oruga-next": "^0.5.5",
         "autoprefixer": "10.4.5",
-        "vue-debounce": "^4.0.0"
+        "vue-debounce": "^4.0.0",
+        "vuedraggable": "^4.1.0"
     }
 }
